@@ -42,6 +42,16 @@ Traces execution (into or over calls) for N steps or until a condition is met, t
 - Summarizes execution flow, hot spots, API calls, loops, and notable patterns
 - Follow-up actions: annotate key addresses in x64dbg, deeper sub-region analysis, deobfuscation
 
+### `/shellcode-analyzer`
+
+Loads, unpacks, and analyzes raw shellcode blobs in x64dbg:
+- Launches x64dbg with `timeout.exe` as a sacrificial process (supports 32-bit and 64-bit)
+- Allocates memory, writes shellcode, and redirects execution with optional NOP sled
+- **Unpacking** — identifies and executes decoder stubs (XOR loops, decompression routines, self-modifying code)
+- **Static analysis** — disassembly, YARA scanning (`/yara-sigs`), annotates key addresses with comments and labels
+- **Dynamic analysis** — steps through import resolvers, inspects decoded payloads/strings/C2 configs
+- Produces annotated shellcode in x64dbg and optional markdown reports
+
 ## Prerequisites
 
 - [x64dbg](https://x64dbg.com/) installed

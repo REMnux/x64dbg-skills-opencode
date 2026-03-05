@@ -16,6 +16,7 @@ Claude Code plugin providing skills for x64dbg debugger automation.
 - `/decompile` — Decompiles a function to C pseudocode via angr
 - `/yara-sigs` — Scans snapshot memory dumps with YARA signatures (packers, crypto, anti-debug, etc.)
 - `/tracealyzer` — Traces execution and analyzes the recorded instruction log
+- `/shellcode-analyzer` — Loads, unpacks, and analyzes shellcode in x64dbg
 
 ## Key Patterns
 
