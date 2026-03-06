@@ -1,11 +1,15 @@
 {
   "name": "x64dbg-skills",
   "description": "Claude Code skills for x64dbg debugger automation",
+  "owner": {
+    "name": "dariushoule",
+    "email": "darius@x64.ooo"
+  },
   "plugins": [
     {
       "name": "x64dbg-skills",
       "description": "Skills for x64dbg debugger automation — state snapshots, memory analysis, and more",
-      "source": "."
+      "source": "./"
     }
   ]
 }
