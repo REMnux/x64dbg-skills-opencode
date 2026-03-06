@@ -9,7 +9,15 @@
     {
       "name": "x64dbg-skills",
       "description": "Skills for x64dbg debugger automation — state snapshots, memory analysis, and more",
-      "source": "./"
+      "source": "./",
+      "skills": [
+        "./skills/state-snapshot",
+        "./skills/state-diff",
+        "./skills/decompile",
+        "./skills/yara-sigs",
+        "./skills/tracealyzer",
+        "./skills/shellcode-analyzer"
+      ]
     }
   ]
 }
