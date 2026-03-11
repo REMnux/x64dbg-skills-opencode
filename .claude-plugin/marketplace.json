@@ -16,7 +16,9 @@
         "./skills/decompile",
         "./skills/yara-sigs",
         "./skills/tracealyzer",
-        "./skills/shellcode-analyzer"
+        "./skills/shellcode-analyzer",
+        "./skills/find-oep",
+        "./skills/vuln-hunter"
       ]
     }
   ]

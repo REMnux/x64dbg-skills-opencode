@@ -17,6 +17,8 @@ Claude Code plugin providing skills for x64dbg debugger automation.
 - `/yara-sigs` — Scans snapshot memory dumps with YARA signatures (packers, crypto, anti-debug, etc.)
 - `/tracealyzer` — Traces execution and analyzes the recorded instruction log
 - `/shellcode-analyzer` — Loads, unpacks, and analyzes shellcode in x64dbg
+- `/find-oep` — Smart trace-based OEP finder for packed/protected PEs (heuristic OEP discovery + state snapshot)
+- `/vuln-hunter` — Hunts for vulnerabilities via import/export recon, attack surface triage, and iterative bug hunting with PoC generation
 
 ## Key Patterns
 
@@ -31,3 +33,4 @@ Claude Code plugin providing skills for x64dbg debugger automation.
 - `x64dbg_automate[mcp]` (pip) — required for all skills
 - `angr` (pip) — required only for `/decompile`
 - `yara-python` (pip) — required only for `/yara-sigs`
+- `lief` (pip) — required only for `/vuln-hunter`

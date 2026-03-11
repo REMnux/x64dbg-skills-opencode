@@ -52,6 +52,25 @@ Loads, unpacks, and analyzes raw shellcode blobs in x64dbg:
 - **Dynamic analysis** — steps through import resolvers, inspects decoded payloads/strings/C2 configs
 - Produces annotated shellcode in x64dbg and optional markdown reports
 
+### `/find-oep`
+
+Smart trace-based OEP finder for packed/protected PE executables:
+- Traces through packer stubs using intelligent stepping, anti-debug evasion, and heuristic detection (section transitions, stack restoration, compiler entry patterns, IAT population)
+- Handles common packers (UPX, ASPack, MPRESS, PECompact, Themida, VMProtect, Enigma) and unknown/custom packers
+- Detects and evades anti-debug techniques: PEB flags, timing checks, hardware BP detection, exception tricks, self-checksums
+- Leverages `/yara-sigs` for packer identification and `/state-snapshot` for memory capture at OEP
+- Leaves the debugger paused at the OEP with a state snapshot for downstream analysis or PE reconstruction
+
+### `/vuln-hunter`
+
+Hunts for vulnerabilities in a running debuggee through systematic analysis:
+- **Reconnaissance** — enumerates imports/exports, categorizes I/O functions by attack context (network, file, registry, etc.), and finds cross-references to dangerous sinks
+- **Triage** — ranks code paths by attacker reachability and sink severity, presents a prioritized attack surface map
+- **Bug hunting** — iteratively analyzes target functions for buffer overflows, integer wraps, format strings, logic flaws; generates test inputs and observes behavior under the debugger
+- **PoC development** — builds proof-of-concept Python scripts that demonstrate impact (crash, info leak, code execution)
+- Leverages `/decompile` for complex functions and `/tracealyzer` for execution tracing
+- Produces annotated targets in x64dbg and optional markdown vulnerability reports
+
 ## Prerequisites
 
 - [x64dbg](https://x64dbg.com/) and [x64dbg Automate](https://dariushoule.github.io/x64dbg-automate-pyclient/installation/) installed
@@ -67,6 +86,10 @@ Loads, unpacks, and analyzes raw shellcode blobs in x64dbg:
 - For the `/yara-sigs` skill: [yara-python](https://pypi.org/project/yara-python/) and [Git](https://git-scm.com/):
   ```
   pip install yara-python
+  ```
+- For the `/vuln-hunter` skill: [LIEF](https://lief-project.github.io/) for static PE analysis:
+  ```
+  pip install lief
   ```
 
 ## Installation
