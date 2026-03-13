@@ -289,6 +289,11 @@ def print_summary(matches: list[dict], compile_errors: list[str], rule_count: in
 
 
 def main():
+    # Ensure UTF-8 output on all platforms (Windows consoles default to locale codepage)
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
     parser = argparse.ArgumentParser(description="Scan state snapshot memory with YARA rules")
     parser.add_argument("--snapshot-dir", required=True, help="Path to snapshot directory")
     parser.add_argument("--yarasigs-dir", required=True, help="Path to yarasigs repository")
