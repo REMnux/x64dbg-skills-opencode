@@ -11,8 +11,20 @@ import argparse
 import json
 import time
 from pathlib import Path
+from typing import Any
 
 from x64dbg_automate import X64DbgClient
+
+
+def _convert_bytes_to_hex(obj: Any) -> Any:
+    """Recursively convert bytes values to hex strings for JSON serialization."""
+    if isinstance(obj, bytes):
+        return obj.hex()
+    if isinstance(obj, dict):
+        return {k: _convert_bytes_to_hex(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_convert_bytes_to_hex(v) for v in obj]
+    return obj
 
 
 def create_output_dir(output_dir: str | None) -> Path:
@@ -30,7 +42,7 @@ def snapshot_registers(client: X64DbgClient, output_dir: Path) -> dict:
     bitness = 64 if hasattr(regs.context, "rax") else 32
     data = {
         "bitness": bitness,
-        "registers": regs.model_dump(mode="json"),
+        "registers": _convert_bytes_to_hex(regs.model_dump()),
     }
     reg_path = output_dir / "registers.json"
     reg_path.write_text(json.dumps(data, indent=2))
