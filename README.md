@@ -2,6 +2,8 @@
 
 Claude Code plugin providing skills for x64dbg debugger automation.
 
+> **REMnux / OpenCode fork.** A fork of [dariushoule/x64dbg-skills](https://github.com/dariushoule/x64dbg-skills) (MIT, by Darius Houle), adapted to run under [OpenCode](https://opencode.ai) on [REMnux](https://remnux.org) driving a **remote** x64dbg on a separate Windows VM. The original Claude Code plugin (the `skills/` directory) is preserved. See [REMnux / OpenCode port](#remnux--opencode-port) below for what changed and how to install.
+
 ## Skills
 
 ### `/state-snapshot`
@@ -112,6 +114,27 @@ To update to the latest version:
 ## Usage
 
 A decent guide that gives good ideas on how to use these skills: [Cooking with x64dbg and MCP](https://x64.ooo/posts/2026-02-12-cooking-with-x64dbg-and-mcp)
+
+## REMnux / OpenCode port
+
+OpenCode cannot load Claude Code plugins, so this fork adds OpenCode **command files** alongside the original skills and ships them on REMnux.
+
+**What this fork adds**
+
+- `commands/x64dbg-*.md`: the eight skills ported to OpenCode custom commands (invoked as `/x64dbg-tracealyzer`, `/x64dbg-find-oep`, and so on). The original `skills/` plugin is left intact for Claude Code users.
+- A reworked `skills/state-snapshot/state_snapshot.py`. Upstream attaches to a local x64dbg by PID. This version connects to a **remote** x64dbg over the network with `X64DbgClient.connect_remote(host, req_port, pub_port)`, so OpenCode on REMnux can pull a Windows debuggee's memory onto the REMnux host for offline analysis. The capture logic is unchanged.
+
+**Architecture**
+
+OpenCode runs on REMnux and drives x64dbg on a separate Windows VM through the `x64dbg-automate-mcp` stdio MCP server (Remote mode, ports 27066/27067). Live debugger work such as snapshots, tracing, and stepping happens over the network. Every offline analyzer (decompile, yara, diff, import enumeration) then runs on REMnux against the captured dumps or the sample on disk.
+
+**Install on REMnux**
+
+These commands ship with REMnux through the `x64dbg-automate-mcp` salt-states package. It installs the dependencies into `/opt/x64dbg-automate-mcp-deps`, lays this repo down at `/opt/x64dbg-skills-opencode`, drops the command files into `~/.config/opencode/commands/`, and registers the `x64dbg` MCP server in OpenCode. The server ships disabled by default, since it only does anything once a remote Windows x64dbg VM is wired up.
+
+**Credit**
+
+All analytical content and the helper scripts are the work of Darius Houle in the original [x64dbg-skills](https://github.com/dariushoule/x64dbg-skills). This fork adapts only the packaging and the snapshot connection for REMnux. Licensed MIT, same as upstream.
 
 ## License
 
