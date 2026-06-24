@@ -34,7 +34,7 @@ If the directory is missing or empty (no `Yara-Rules` or `citizenlab` subdirecto
 
 ### 3. Determine what to scan for
 
-The YARA database contains many rule categories. If the user specified what they want to scan for in their invocation, use that. Otherwise, ask the user what they want to scan for using `AskUserQuestion` with these options:
+The YARA database contains many rule categories. If the user specified what they want to scan for in their invocation, use that. Otherwise, ask the user what they want to scan for, offering these options:
 
 - **Packers & compilers** — Detect packers (UPX, Themida, etc.) and compiler signatures
 - **Crypto constants** — Find cryptographic algorithm constants (AES S-boxes, RSA, MD5, etc.)

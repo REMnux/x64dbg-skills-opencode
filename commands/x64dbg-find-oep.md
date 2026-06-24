@@ -14,7 +14,7 @@ These steps use the tools exposed by the `x64dbg` MCP server. Call them directly
 
 ### 1. Gather input and assess target
 
-Ask the user (via `AskUserQuestion`) for any information not already provided:
+Ask the user for any information not already provided:
 
 - **Windows VM host/IP** and ports (default `27066`/`27067`)
 - **Target path** — path to the packed PE as loaded on the Windows VM
@@ -123,13 +123,25 @@ When you believe you've reached the OEP:
    - A disassembly listing of the first ~30 instructions
    - Confidence level and reasoning
 
-Ask the user via `AskUserQuestion`: "OEP found at `<address>`. Take a state snapshot?"
+Ask the user: "OEP found at `<address>`. Take a state snapshot?"
 
 If the user says no or wants to adjust, continue stepping as directed.
 
 ### 7. Capture state snapshot
 
-Run `/x64dbg-state-snapshot` to dump the full debuggee memory state at the OEP onto REMnux. Note the snapshot output directory.
+Capture the full debuggee state at the OEP onto REMnux with the bundled snapshot script. The script reads every committed memory region over the network and writes the dump to REMnux, so nothing has to be copied off the Windows VM afterward. Because only one client can be connected to the remote x64dbg at a time, disconnect the MCP client first and reconnect after:
+
+1. **Disconnect the MCP client**: call `disconnect` to free the ZMQ connection for the snapshot script.
+2. **Run the snapshot script** via the bundled virtualenv Python, using the host and ports recorded in step 2:
+
+   ```
+   /opt/x64dbg-automate-mcp-deps/bin/python3 /opt/x64dbg-skills-opencode/skills/state-snapshot/state_snapshot.py --remote-host <windows_vm_ip> --req-port 27066 --pub-port 27067
+   ```
+
+   The dump lands in `./snapshots/<timestamp>/` on REMnux (pass `--output-dir <path>` to override).
+3. **Reconnect the MCP client**: call `connect_remote` with the host and ports from step 2 to restore the session to the same debuggee.
+
+Note the snapshot output directory on REMnux.
 
 Report the final results to the user:
 - OEP address and section
