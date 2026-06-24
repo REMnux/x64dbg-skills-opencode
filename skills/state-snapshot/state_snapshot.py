@@ -1,10 +1,18 @@
 """
 Capture a full debuggee state snapshot (processor state + all committed memory regions).
 
-Connects directly to a running x64dbg session via x64dbg_automate (ZMQ) and dumps:
+Connects to a REMOTE x64dbg session via x64dbg_automate (ZMQ) and dumps:
   - registers.json: Full register dump (RegDump64/RegDump32 serialized via Pydantic)
   - memory_map.json: Manifest of all committed memory regions with metadata
   - <base>_<size>.bin: Raw memory contents for each committed region
+
+REMnux/OpenCode port (REMnux x64dbg-skills-opencode): the upstream script attached to a
+local x64dbg by PID, which only works when the debugger and this script run on the same
+machine. This variant connects to x64dbg running on a separate Windows VM whose
+x64dbg-automate plugin is in Remote mode, so the debuggee's memory is pulled over the
+network onto the REMnux host for offline analysis. Connection setup is the only change;
+the capture logic is unchanged. detach_session() simply closes the ZMQ sockets and leaves
+the remote debugger running.
 """
 
 import argparse
@@ -93,18 +101,25 @@ def snapshot_memory(client: X64DbgClient, output_dir: Path) -> list[dict]:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Capture x64dbg debuggee state snapshot")
-    parser.add_argument("--x64dbg-path", required=True, help="Path to x64dbg executable")
-    parser.add_argument("--pid", required=True, type=int, help="PID of the x64dbg debugger process")
-    parser.add_argument("--output-dir", default=None, help="Output directory (default: ./snapshots/<timestamp>)")
+    parser = argparse.ArgumentParser(
+        description="Capture an x64dbg debuggee state snapshot from a remote x64dbg session"
+    )
+    parser.add_argument("--remote-host", required=True,
+                        help="Host/IP of the Windows VM running x64dbg with the automate plugin in Remote mode")
+    parser.add_argument("--req-port", type=int, default=27066,
+                        help="ZMQ REQ/REP port the plugin listens on (default: 27066)")
+    parser.add_argument("--pub-port", type=int, default=27067,
+                        help="ZMQ PUB/SUB port the plugin listens on (default: 27067)")
+    parser.add_argument("--output-dir", default=None,
+                        help="Output directory (default: ./snapshots/<timestamp>)")
     args = parser.parse_args()
 
     output_dir = create_output_dir(args.output_dir)
     print(f"[*] Snapshot output directory: {output_dir.resolve()}")
 
-    print(f"[*] Connecting to x64dbg session (PID {args.pid})...")
-    client = X64DbgClient(args.x64dbg_path)
-    client.attach_session(args.pid)
+    print(f"[*] Connecting to remote x64dbg at {args.remote_host} "
+          f"(REQ/REP {args.req_port}, PUB/SUB {args.pub_port})...")
+    client = X64DbgClient.connect_remote(args.remote_host, args.req_port, args.pub_port)
     print("[+] Connected")
 
     try:
