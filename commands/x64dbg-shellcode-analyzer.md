@@ -14,7 +14,7 @@ These steps use the tools exposed by the `x64dbg` MCP server. Call them directly
 
 ### 1. Gather input
 
-Ask the user (via `AskUserQuestion`) for:
+Ask the user for:
 
 - **Windows VM host/IP** and ports (default `27066`/`27067`)
 - **Shellcode path** — path to the raw shellcode file on the REMnux host
@@ -45,7 +45,7 @@ Call `allocate_memory` with this size. Record the returned base address.
 ### 5. NOP sled (optional)
 
 Some shellcodes require a NOP sled to function properly. The user should answer yes if they don't know.
-Ask the user via `AskUserQuestion`: "Would you like a 32-byte NOP sled before the shellcode?"
+Ask the user: "Would you like a 32-byte NOP sled before the shellcode?"
 
 If yes:
 - Write 32 NOP bytes at the base address: call `write_memory` with `hex_data` = `"90"` repeated 32 times (`"9090909090909090909090909090909090909090909090909090909090909090"`)
@@ -70,7 +70,7 @@ Call `set_register` with:
 
 ### 8. Unpacking assistance
 
-Some shellcodes are obscured by a packer/crypter. Ask the user via `AskUserQuestion`: "Shellcode loaded. Do you need help unpacking it?"
+Some shellcodes are obscured by a packer/crypter. Ask the user: "Shellcode loaded. Do you need help unpacking it?"
 
 If yes:
 
@@ -91,7 +91,7 @@ If yes:
 
 ### 9. Static analysis
 
-Ask the user via `AskUserQuestion`: "Would you like help statically analyzing the shellcode?"
+Ask the user: "Would you like help statically analyzing the shellcode?"
 
 If yes:
 
@@ -111,7 +111,7 @@ If yes:
 
 ### 10. Dynamic analysis
 
-Ask the user via `AskUserQuestion`: "Would you like help dynamically analyzing the shellcode?"
+Ask the user: "Would you like help dynamically analyzing the shellcode?"
 
 If yes:
 
@@ -130,7 +130,7 @@ Refine static comments/labels based on dynamic insights.
 
 ### 11. Report Generation
 
-Ask via `AskUserQuestion`: "Would you like a markdown report of the static analysis?" — if yes, read the template at `/opt/x64dbg-skills-opencode/skills/shellcode-analyzer/report_template.md` and fill in every section based on analysis findings. Write the completed report to `./reports/shellcode_analysis_<timestamp>.md` via `Write`. Omit table rows or sections that have no findings, but preserve the overall structure.
+Ask the user: "Would you like a markdown report of the static analysis?" — if yes, read the template at `/opt/x64dbg-skills-opencode/skills/shellcode-analyzer/report_template.md` and fill in every section based on analysis findings. Write the completed report to `./reports/shellcode_analysis_<timestamp>.md` via `Write`. Omit table rows or sections that have no findings, but preserve the overall structure.
 
 ### 12. Refresh GUI
 

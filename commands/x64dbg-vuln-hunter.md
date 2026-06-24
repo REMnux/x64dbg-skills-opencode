@@ -169,7 +169,7 @@ After triaging, present the ranked list to the user:
 | ...  | ...     | ...      | ...        | ...          | ... |
 ```
 
-Ask the user via `AskUserQuestion`: "Here is the triaged attack surface. Which targets should I investigate? (all / specific ranks / let me choose)"
+Ask the user: "Here is the triaged attack surface. Which targets should I investigate? (all / specific ranks / let me choose)"
 
 ### 4. Bug hunting (iterative)
 
@@ -284,6 +284,6 @@ Repeat steps 5a–5c until the PoC is reliable or the user decides to move on.
 
 ### 6. Report generation
 
-Ask via `AskUserQuestion`: "Would you like a markdown vulnerability report?"
+Ask the user: "Would you like a markdown vulnerability report?"
 
 If yes, read the report template at `/opt/x64dbg-skills-opencode/skills/vuln-hunter/report_template.md` and fill in every section based on findings. Write the completed report to `./reports/vuln_report_<timestamp>.md` via `Write`. Omit table rows or sections that have no findings, but preserve the overall structure.
